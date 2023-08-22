@@ -86,3 +86,26 @@ $("#btnVerPass").on("click", function (evento) {
     this.innerHTML = '<i class="bi bi-eye"></i>';
   }
 });
+/*=============================================
+COMPROBAR SI EXISTE Alumno
+=============================================*/
+$(document.frmUsuarios.usuario).on("blur", function (evento) {
+  if (this.value.length > 0) {
+    $.post(
+      base_url + "Usuarios_c/leerUsuarioAjax",
+      { usuario: this.value },
+      (datos) => {
+        let comprobar = JSON.parse(datos);
+        if (comprobar) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "El usuario ya existe. Vuelva a intentarlo",
+          });
+          this.value = "";
+          this.focus();
+        }
+      }
+    );
+  }
+});
