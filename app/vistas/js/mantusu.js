@@ -70,10 +70,16 @@ $(".btnModificar").on("click", function (evento) {
   );
 });
 $("#usuariosModal").on("shown.bs.modal", function (evento) {
-  document.frmUsuarios.usuario.focus();
+  if (document.frmUsuarios.action == base_url + "Usuarios_c/modificar") {
+    document.frmUsuarios.apenom.focus();
+  } else {
+    document.frmUsuarios.usuario.readOnly = false;
+    document.frmUsuarios.usuario.focus();
+  }
 });
 
 $("#btnNuevo").on("click", function (evento) {
+  document.frmUsuarios.action = base_url + "Usuarios_c/insertar";
   document.frmUsuarios.reset(); // Resetear campos del formulario
 });
 // Ver password
@@ -90,22 +96,24 @@ $("#btnVerPass").on("click", function (evento) {
 COMPROBAR SI EXISTE Alumno
 =============================================*/
 $(document.frmUsuarios.usuario).on("blur", function (evento) {
-  if (this.value.length > 0) {
-    $.post(
-      base_url + "Usuarios_c/leerUsuarioAjax",
-      { usuario: this.value },
-      (datos) => {
-        let comprobar = JSON.parse(datos);
-        if (comprobar) {
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "El usuario ya existe. Vuelva a intentarlo",
-          });
-          this.value = "";
-          this.focus();
+  if (document.frmUsuarios.action == base_url + "Usuarios_c/insertar") {
+    if (this.value.length > 0) {
+      $.post(
+        base_url + "Usuarios_c/leerUsuarioAjax",
+        { usuario: this.value },
+        (datos) => {
+          let comprobar = JSON.parse(datos);
+          if (comprobar) {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "El usuario ya existe. Vuelva a intentarlo",
+            });
+            this.value = "";
+            this.focus();
+          }
         }
-      }
-    );
+      );
+    }
   }
 });
