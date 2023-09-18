@@ -91,7 +91,7 @@ class Usuarios_m extends Model
     }
     public function leerTodos()
     {
-        $cadSQL = "SELECT * FROM usuarios_gesprof ORDER BY 2";
+        $cadSQL = "SELECT * FROM usuarios_gesprof ORDER BY 3";
         $this->consultar($cadSQL);
         return $this->resultado();
     }

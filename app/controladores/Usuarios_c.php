@@ -238,4 +238,39 @@ class Usuarios_c extends Controller
         // Este metodo recibe un parametro con el usuario y devuelve un objeto JSON con los datos del usuario
         echo json_encode($this->usuarios_m->leer($_REQUEST['usuario']));
     }
+    public function cargar()
+    {
+        $lista = explode("\n", str_replace("\r", "", $_REQUEST['lista']));
+        $profesores = [];
+        foreach ($lista as $clave => $valor) {
+
+            $profesores[] = array_map('trim', explode('|', $valor));
+        }
+        foreach ($profesores as &$elemento) {
+            $elemento["usuario"] = $elemento[0];
+            unset($elemento[0]);
+            $elemento["apenom"] = $elemento[1];
+            unset($elemento[1]);
+            if (isset($elemento[2])) {
+                $elemento["email"] = $elemento[2];
+                unset($elemento[2]);
+            } else {
+                $elemento["email"] = $elemento["usuario"] . "@educarex.es";
+            }
+            $elemento['departamento'] = "";
+            $elemento['rol'] = "P";
+            $elemento['horario'] = "D";
+            $elemento['codigoprof'] = "";
+            $elemento['password'] = password_hash("profpas123*", PASSWORD_DEFAULT);
+        }
+        $errores = [];
+        foreach ($profesores as $prof) {
+            $resultado = $this->usuarios_m->leer($prof['usuario']);
+            if ($resultado === false) {
+                $this->usuarios_m->insertar($prof);
+            }
+        }
+        if (count($errores) > 0) $_SESSION['mensajes'] = $errores;
+        header("location:" . $_SERVER['HTTP_REFERER']);
+    }
 }
