@@ -73,13 +73,13 @@ $(document.frmSolicitar).on("submit", function (evento) {
     return;
   }
   if (fechaPedida > hoy.add(3, "months")) {
-    if (fechaPedida <= hoy.add(14, "days")) {
+   
       Swal.fire({
         icon: "error",
         text: "La fecha MAXIMA de antelación no puede ser superior a 3 meses.",
       });
       return;
-    }
+    
   }
 
   if ($(this.dia_lectivo).is(":checked")) {
